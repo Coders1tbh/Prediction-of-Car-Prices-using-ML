@@ -1,0 +1,128 @@
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+from sklearn.linear_model import Lasso
+from sklearn import metrics
+
+# Data Collection and Processing
+
+# Loading the data from csv file to pandas dataframe
+car_dataset = pd.read_csv('/content/car data.csv')
+
+# Inspecting the first five rows of the dataframe
+car_dataset.head()
+
+# Checking the number of rows and columns
+car_dataset.shape
+
+# Getting some information about the dataset
+car_dataset.info()
+
+# Finding the number of missing values
+car_dataset.isnull().sum()
+
+# Checking the distribution of categorical data
+print(car_dataset.Fuel_Type.value_counts())
+print(car_dataset.Seller_Type.value_counts())
+print(car_dataset.Transmission.value_counts())
+
+# Encoding the  Categorical data
+
+# "Fuel_Type" Column
+car_dataset.replace({'Fuel_Type':{'Petrol':0, 'Diesel':1, 'CNG':2}}, inplace = True)
+
+# "Seller_Type" Column
+car_dataset.replace({'Seller_Type':{'Dealer':0, 'Individual':1}}, inplace = True)
+
+# "Fuel_Type" Column
+car_dataset.replace({'Transmission':{'Manual':0, 'Automatic':1}}, inplace = True)
+
+car_dataset.head()
+
+# Splitting Data Into Target Variables
+X = car_dataset.drop(['Car_Name', 'Selling_Price'], axis = 1) 
+Y = car_dataset['Selling_Price']
+
+print(X)
+
+print(Y)
+
+# Splitting Data Into Training Data and Testing Data
+X_train, X_test, Y_train, Y_test = train_test_split( X, Y, test_size = 0.1, random_state = 2)
+
+# Model Training
+# 1. Linear Regression 
+
+#Importing the Linear Regression Model
+lin_reg_model = LinearRegression()
+
+lin_reg_model.fit(X_train, Y_train)
+
+#Model Evaluation
+
+#Prediction on Training Data
+training_data_prediction = lin_reg_model.predict(X_train)
+
+# R squared error
+error_score = metrics.r2_score(Y_train, training_data_prediction)
+print("R squared error: ",error_score)
+
+# Visualing the actual prices and predicting prices
+plt.scatter(Y_train, training_data_prediction)
+plt.xlabel("Actual Price")
+plt.ylabel("Predicted Price")
+plt.title("Actual Price v/s Predicted Price")
+plt.show()
+
+#Prediction on Training Data
+testing_data_prediction = lin_reg_model.predict(X_test)
+
+error_score = metrics.r2_score(Y_test, testing_data_prediction)
+print("R squared error: ",error_score)
+
+plt.scatter(Y_test, testing_data_prediction)
+plt.xlabel("Actual Price")
+plt.ylabel("Predicted Price")
+plt.title("Actual Price v/s Predicted Price")
+plt.show()
+
+# 2. Lasso Regression
+
+
+# 2. Lasso Regression
+
+#Importing the Lasso Regression Model
+lasso_reg_model =Lasso()
+
+lasso_reg_model.fit(X_train,Y_train)
+
+#Model Evaluation
+
+#Prediction on Training Data
+training_data_prediction = lasso_reg_model.predict(X_train)
+
+# R squared error
+error_score = metrics.r2_score(Y_train, training_data_prediction)
+print("R squared error: ",error_score)
+
+# Visualing the actual prices and predicting prices
+plt.scatter(Y_train, training_data_prediction)
+plt.xlabel("Actual Price")
+plt.ylabel("Predicted Price")
+plt.title("Actual Price v/s Predicted Price")
+plt.show()
+
+#Prediction on Training Data
+testing_data_prediction = lasso_reg_model.predict(X_test)
+
+error_score = metrics.r2_score(Y_test, testing_data_prediction)
+print("R squared error: ",error_score)
+
+plt.scatter(Y_test, testing_data_prediction)
+plt.xlabel("Actual Price")
+plt.ylabel("Predicted Price")
+plt.title("Actual Price v/s Predicted Price")
+plt.show()
