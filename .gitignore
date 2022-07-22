@@ -1,129 +1,128 @@
-# Byte-compiled / optimized / DLL files
-__pycache__/
-*.py[cod]
-*$py.class
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+from sklearn.linear_model import Lasso
+from sklearn import metrics
 
-# C extensions
-*.so
+# Data Collection and Processing
 
-# Distribution / packaging
-.Python
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-pip-wheel-metadata/
-share/python-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
-MANIFEST
+# Loading the data from csv file to pandas dataframe
+car_dataset = pd.read_csv('/content/car data.csv')
 
-# PyInstaller
-#  Usually these files are written by a python script from a template
-#  before PyInstaller builds the exe, so as to inject date/other infos into it.
-*.manifest
-*.spec
+# Inspecting the first five rows of the dataframe
+car_dataset.head()
 
-# Installer logs
-pip-log.txt
-pip-delete-this-directory.txt
+# Checking the number of rows and columns
+car_dataset.shape
 
-# Unit test / coverage reports
-htmlcov/
-.tox/
-.nox/
-.coverage
-.coverage.*
-.cache
-nosetests.xml
-coverage.xml
-*.cover
-*.py,cover
-.hypothesis/
-.pytest_cache/
+# Getting some information about the dataset
+car_dataset.info()
 
-# Translations
-*.mo
-*.pot
+# Finding the number of missing values
+car_dataset.isnull().sum()
 
-# Django stuff:
-*.log
-local_settings.py
-db.sqlite3
-db.sqlite3-journal
+# Checking the distribution of categorical data
+print(car_dataset.Fuel_Type.value_counts())
+print(car_dataset.Seller_Type.value_counts())
+print(car_dataset.Transmission.value_counts())
 
-# Flask stuff:
-instance/
-.webassets-cache
+# Encoding the  Categorical data
 
-# Scrapy stuff:
-.scrapy
+# "Fuel_Type" Column
+car_dataset.replace({'Fuel_Type':{'Petrol':0, 'Diesel':1, 'CNG':2}}, inplace = True)
 
-# Sphinx documentation
-docs/_build/
+# "Seller_Type" Column
+car_dataset.replace({'Seller_Type':{'Dealer':0, 'Individual':1}}, inplace = True)
 
-# PyBuilder
-target/
+# "Fuel_Type" Column
+car_dataset.replace({'Transmission':{'Manual':0, 'Automatic':1}}, inplace = True)
 
-# Jupyter Notebook
-.ipynb_checkpoints
+car_dataset.head()
 
-# IPython
-profile_default/
-ipython_config.py
+# Splitting Data Into Target Variables
+X = car_dataset.drop(['Car_Name', 'Selling_Price'], axis = 1) 
+Y = car_dataset['Selling_Price']
 
-# pyenv
-.python-version
+print(X)
 
-# pipenv
-#   According to pypa/pipenv#598, it is recommended to include Pipfile.lock in version control.
-#   However, in case of collaboration, if having platform-specific dependencies or dependencies
-#   having no cross-platform support, pipenv may install dependencies that don't work, or not
-#   install all needed dependencies.
-#Pipfile.lock
+print(Y)
 
-# PEP 582; used by e.g. github.com/David-OConnor/pyflow
-__pypackages__/
+# Splitting Data Into Training Data and Testing Data
+X_train, X_test, Y_train, Y_test = train_test_split( X, Y, test_size = 0.1, random_state = 2)
 
-# Celery stuff
-celerybeat-schedule
-celerybeat.pid
+# Model Training
+# 1. Linear Regression 
 
-# SageMath parsed files
-*.sage.py
+#Importing the Linear Regression Model
+lin_reg_model = LinearRegression()
 
-# Environments
-.env
-.venv
-env/
-venv/
-ENV/
-env.bak/
-venv.bak/
+lin_reg_model.fit(X_train, Y_train)
 
-# Spyder project settings
-.spyderproject
-.spyproject
+#Model Evaluation
 
-# Rope project settings
-.ropeproject
+#Prediction on Training Data
+training_data_prediction = lin_reg_model.predict(X_train)
 
-# mkdocs documentation
-/site
+# R squared error
+error_score = metrics.r2_score(Y_train, training_data_prediction)
+print("R squared error: ",error_score)
 
-# mypy
-.mypy_cache/
-.dmypy.json
-dmypy.json
+# Visualing the actual prices and predicting prices
+plt.scatter(Y_train, training_data_prediction)
+plt.xlabel("Actual Price")
+plt.ylabel("Predicted Price")
+plt.title("Actual Price v/s Predicted Price")
+plt.show()
 
-# Pyre type checker
-.pyre/
+#Prediction on Training Data
+testing_data_prediction = lin_reg_model.predict(X_test)
+
+error_score = metrics.r2_score(Y_test, testing_data_prediction)
+print("R squared error: ",error_score)
+
+plt.scatter(Y_test, testing_data_prediction)
+plt.xlabel("Actual Price")
+plt.ylabel("Predicted Price")
+plt.title("Actual Price v/s Predicted Price")
+plt.show()
+
+# 2. Lasso Regression
+
+
+# 2. Lasso Regression
+
+#Importing the Lasso Regression Model
+lasso_reg_model =Lasso()
+
+lasso_reg_model.fit(X_train,Y_train)
+
+#Model Evaluation
+
+#Prediction on Training Data
+training_data_prediction = lasso_reg_model.predict(X_train)
+
+# R squared error
+error_score = metrics.r2_score(Y_train, training_data_prediction)
+print("R squared error: ",error_score)
+
+# Visualing the actual prices and predicting prices
+plt.scatter(Y_train, training_data_prediction)
+plt.xlabel("Actual Price")
+plt.ylabel("Predicted Price")
+plt.title("Actual Price v/s Predicted Price")
+plt.show()
+
+#Prediction on Training Data
+testing_data_prediction = lasso_reg_model.predict(X_test)
+
+error_score = metrics.r2_score(Y_test, testing_data_prediction)
+print("R squared error: ",error_score)
+
+plt.scatter(Y_test, testing_data_prediction)
+plt.xlabel("Actual Price")
+plt.ylabel("Predicted Price")
+plt.title("Actual Price v/s Predicted Price")
+plt.show()
